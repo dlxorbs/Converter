@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>SVG → SCSS Mixin 변환기</title>
+  <style>
+    body {
+      font-family: "Pretendard Variable";
+      padding: 20px;
+      background-color: #f8f9fb;
+
+      filter: drop-shadow(0 0px 8px #33333330);
+    }
+
+    .Container {
+      display: flex;
+      max-width: 1024px;
+      margin: 0 auto;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .sideTab {
+      display: flex;
+      flex-direction: column;
+      width: 64px;
+      /* box-shadow: 0 0 8px #33333330; */
+      height: fit-content;
+      border-radius: 20px 0 0 20px;
+      overflow: hidden;
+      gap: 0px;
+    }
+
+    .sideTab .radio,
+    .sideTab label {
+      width: 100%;
+      height: auto;
+    }
+
+    .sideTab label {
+      flex: none;
+    }
+
+    .sideTab div {
+      writing-mode: vertical-rl;
+    }
+
+    .sideTab .radio {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 12px;
+      border-radius: 20px 0 0 20px;
+      padding: 20px 0;
+      transition: .2s;
+      font-weight: 500;
+      background-color: #ffffffd9;
+    }
+
+    .sideTab .radio::before {
+      width: 4px;
+      content: "";
+      height: 100%;
+      padding: 20px 0;
+
+    }
+
+    .sideTab input[type="radio"]:checked~.radio {
+      color: #68b1f7;
+      background-color: #ffffff;
+      transition: 0.2s;
+      filter: drop-shadow(1px 1px 4px #33333330);
+
+    }
+
+    .sideTab input[type="radio"]:checked~.radio::before {
+      background-color: #ffffff;
+    }
+
+
+    .wrapper,
+    .wrapper2 {
+      font-family: sans-serif;
+      width: 100%;
+      height: 100%;
+      padding: 20px;
+      display: none;
+      flex-direction: column;
+      background-color: #ffffff;
+      border-radius: 0 20px 20px 20px;
+      /* box-shadow: 0 0 8px #33333330; */
+
+    }
+
+    textarea,
+    input {
+      width: calc(100% - 20px);
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 4px;
+      min-height: 50px;
+      border: 1px solid #e0e0e0;
+      resize: none;
+    }
+
+    #iconName,
+    #keyInput {
+      height: 24px;
+      min-height: auto;
+
+    }
+
+    textarea:focus,
+    input:focus {
+      outline: none;
+    }
+
+    button {
+      padding: 10px 15px;
+      outline: none;
+      border: none;
+      border-radius: 4px;
+      background-color: #68b1f7;
+      color: #ffffff;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #4389e4;
+    }
+
+    button:active {
+      background-color: #367ddb;
+
+    }
+
+    pre {
+      background: #f5f5f5;
+      padding: 10px;
+      white-space: pre-wrap;
+      border: 1px solid #ccc;
+      margin-top: 20px;
+    }
+
+    #result {
+      height: 200px;
+      overflow: auto;
+    }
+
+    .radioContainer {
+      display: flex;
+      width: calc(100% - 20px);
+      height: 40px;
+      border-radius: 8px;
+      margin: 0 0 24px 0;
+      padding: 8px;
+      border: 1px solid #eeeeee;
+    }
+
+    label {
+      flex: 1 1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    input[type="radio"] {
+      display: none;
+    }
+
+    .wrapperCon {
+      display: flex;
+      gap: 16px;
+    }
+
+    .input {
+      flex: 1;
+    }
+
+    .viewer {
+      flex: .5;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .viewer>img {
+      margin: 0 auto;
+      width: 200px;
+      aspect-ratio: 1/1;
+    }
+
+    .radio {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 4px;
+    }
+
+    input[type="radio"]:checked~.radio {
+      color: white;
+      background-color: #68b1f7;
+      transition: 0.2s;
+    }
+
+    .visible {
+      display: flex;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="Container">
+    <div class="sideTab">
+      <label>
+        <input type="radio" name="changerType" value="xaml" checked />
+        <div class="radio">BESTCARE 2.0</div>
+
+      </label>
+      <label>
+        <input type="radio" name="changerType" value="scss" />
+        <div class="radio">클라우드</div>
+      </label>
+
+    </div>
+
+    <div class="wrapper2 visible">
+      <h2>SVG → XAML StreamGeometry 변환기</h2>
+      <div class="wrapperCon">
+        <div class="input">
+          <h3>Key값 및 SVG 코드 입력</h3>
+          <input type="text" id="keyInput" placeholder="키값 입력 예: MyGeometry" />
+          <textarea id="svgInput" placeholder="<svg> 또는 <path> 코드 전체 붙여넣기"></textarea>
+
+          <button onclick="convertToStreamGeometry()">변환하기</button>
+
+          <h3>결과 </h3>
+          <pre id="result"></pre>
+        </div>
+        <div class="viewer">
+          <h3>SVG 이미지 미리보기</h3>
+          <img id="svgPreview" alt="SVG Preview"
+            style="max-width: 200px; max-height: 200px; display: block; margin-top: 10px;" />
+        </div>
+      </div>
+    </div>
+    <div class="wrapper ">
+      <h2>SVG → SCSS Mixin 변환기</h2>
+      <div class="wrapperCon">
+        <div class="input">
+          <div class="radioContainer">
+            <label>
+              <input type="radio" name="icontype" value="top" checked />
+              <div class="radio">top버튼</div>
+            </label>
+            <label>
+              <input type="radio" name="icontype" value="default" />
+              <div class="radio">기본아이콘</div>
+            </label>
+            <label>
+              <input type="radio" name="icontype" value="control" />
+              <div class="radio">컨트롤</div>
+            </label>
+
+            <div class="background"></div>
+          </div>
+
+          <input type="text" id="iconName" placeholder="아이콘 명칭 입력 (예: scanform)">
+          <textarea id="svgInput" placeholder="<svg>...</svg>"></textarea>
+          <button id="convertBtn" onClick="converToSCSS()">변환 & 복사</button>
+
+          <h3>결과</h3>
+          <pre id="result"></pre>
+        </div>
+
+        <div class="viewer">
+          <h3>SVG 이미지 미리보기</h3>
+          <img id="svgPreview" alt="SVG Preview"
+            style="max-width: 200px; max-height: 200px; display: block; margin-top: 10px;" />
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    document.querySelectorAll('input[name="changerType"]').forEach((el) => {
+      el.addEventListener('change', () => {
+        const type = document.querySelector('input[name="changerType"]:checked').value;
+        console.log(type);
+
+        if (type === "scss") {
+          document.querySelector('.wrapper').classList.add('visible');
+          document.querySelector('.wrapper2').classList.remove('visible');
+        } else {
+          document.querySelector('.wrapper2').classList.add('visible');
+          document.querySelector('.wrapper').classList.remove('visible');
+        }
+      });
+    });
+  </script>
+
+
+  <script>
+    function converToSCSS() {
+      const icontype = document.querySelector('input[name="icontype"]:checked').value;
+
+      const iconName = document.getElementById('iconName').value.trim();
+      const input = document.getElementById('svgInput').value;
+
+      if (!iconName || !input) {
+        alert('아이콘 이름과 SVG를 모두 입력해주세요.');
+        return;
+      }
+      const styleMatch = input.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
+      const styleContent = styleMatch ? styleMatch[1] : '';
+      const classColorMap = {};
+      let colorIndex = 1;
+
+      const transformedStyle = styleContent.replace(/(\.(\w+))\s*\{\s*fill\s*:\s*(#[0-9a-fA-F]{3,6})\s*;?\s*\}/g,
+        (_, selector, className, color) => {
+          const varName = colorIndex === 1 ? '$color' : `$color${colorIndex}`;
+          classColorMap[className] = varName;
+          colorIndex++;
+          return `${selector} { fill: #\{${varName}}; }`;
+        }
+      );
+      const newStyleTag = `<style>${transformedStyle}</style>`;
+      const svgWithoutOldStyle = input.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+      const svgWithNewStyle = svgWithoutOldStyle.replace(/(<svg[^>]*>)/i, `$1${newStyleTag}`);
+
+      const inlineSVG = svgWithNewStyle
+        .replace(/>\s+</g, '><')
+        .replace(/\s{2,}/g, ' ')
+        .replace(/[\n\r\t]/g, '')
+        .replace(/"/g, "'")
+        .trim();
+
+      const variableList = Object.values(classColorMap);
+      const mixinParams = variableList.join(', ') || '$color';
+      const mixinName = `${icontype == 'top' ? `icon-top-${iconName}` : icontype == 'default' ? `icon-${iconName}` : `icon-control-${iconName}`}`
+      const today = new Date().toISOString().slice(0, 10);
+      const comment = `// ${iconName} 아이콘 mixin (생성일 ${today})`;
+      console.log(mixinName)
+
+      const mixinCode =
+        `${comment}
+@mixin ${mixinName}(${mixinParams}) {
+  background-image: url("data:image/svg+xml;utf8,${inlineSVG}");
+  background-repeat: no-repeat;
+}`;
+
+      document.getElementById('result').textContent = mixinCode;
+      navigator.clipboard.writeText(mixinCode)
+        .then(() => alert('✅복사 완료'))
+        .catch(err => alert(err));
+      const previewImg = document.getElementById('svgPreview');
+      const svgBlob = new Blob([svgWithNewStyle], { type: 'image/svg+xml' });
+      const svgUrl = URL.createObjectURL(svgBlob);
+      previewImg.src = svgUrl;
+
+    }
+  </script>
+
+  <script>
+    function convertToStreamGeometry() {
+      const keyName = document.getElementById('keyInput').value.trim();
+      const svgCode = document.getElementById('svgInput').value.trim();
+      const output = document.getElementById('result');
+
+      if (!keyName) {
+        alert('x:Key 이름을 입력해주세요.');
+        return;
+      }
+
+      if (!svgCode) {
+        alert('SVG 코드를 입력해주세요.');
+        return;
+      }
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(svgCode, "image/svg+xml");
+      const paths = doc.querySelectorAll("path");
+
+      if (paths.length === 0) {
+        output.value = '⚠️ path 태그가 없습니다.';
+        return;
+      }
+
+      let dCombined = '';
+      paths.forEach(path => {
+        const d = path.getAttribute("d");
+        if (d) {
+          dCombined += d.trim() + ' ';
+        }
+      });
+
+      if (!dCombined) {
+        output.value = '⚠️ d 속성이 없습니다.';
+        return;
+      }
+
+      const result = `<StreamGeometry PresentationOptions:Freeze="true" x:Key="${keyName}">${dCombined.trim()}</StreamGeometry>`;
+      output.value = result;
+      navigator.clipboard.writeText(result).then(() => alert('복사완료')).catch(err => alert(err))
+
+      const previewImg = document.getElementById('svgPreview');
+
+      // SVG 문자열을 Blob으로 변환
+      const svgBlob = new Blob([svgCode], { type: 'image/svg+xml' });
+      const svgUrl = URL.createObjectURL(svgBlob);
+
+      // <img> 태그에 설정
+      previewImg.src = svgUrl;
+    }
+  </script>
+</body>
+
+</html>
