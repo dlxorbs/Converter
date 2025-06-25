@@ -82,7 +82,7 @@
     .wrapper,
     .wrapper2 {
       font-family: sans-serif;
-      width: 100%;
+      width: calc(100% - 104px);
       height: 100%;
       padding: 20px;
       display: none;
@@ -142,9 +142,11 @@
       white-space: pre-wrap;
       border: 1px solid #ccc;
       margin-top: 20px;
+      overflow: scroll;
     }
 
-    #result {
+    #result,
+    #result2 {
       height: 200px;
       overflow: auto;
     }
@@ -172,16 +174,18 @@
     }
 
     .wrapperCon {
+      width: 100%;
       display: flex;
       gap: 16px;
     }
 
     .input {
-      flex: 1;
+      flex: 2;
+      max-width: 66%;
     }
 
     .viewer {
-      flex: .5;
+      flex: 1;
       display: flex;
       flex-direction: column;
     }
@@ -274,7 +278,7 @@
           <button id="convertBtn" onClick="convertToSCSS()">변환 & 복사</button>
 
           <h3>결과</h3>
-          <pre id="result"></pre>
+          <pre id="result2"></pre>
         </div>
 
         <div class="viewer">
@@ -355,7 +359,8 @@
   background-repeat: no-repeat;
 }`;
 
-      document.getElementById('result').textContent = mixinCode;
+      document.getElementById('result2').textContent = mixinCode;
+      console.log(mixinCode)
       navigator.clipboard.writeText(mixinCode)
         .then(() => alert('✅복사 완료'))
         .catch(err => alert(err));
