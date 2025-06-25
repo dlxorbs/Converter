@@ -50,7 +50,7 @@
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-      gap: 12px;
+      gap: 18px;
       border-radius: 20px 0 0 20px;
       padding: 20px 0;
       transition: .2s;
@@ -274,7 +274,7 @@
           </div>
 
           <input type="text" id="iconName" placeholder="아이콘 명칭 입력 (예: scanform)">
-          <textarea id="svgInput" placeholder="<svg>...</svg>"></textarea>
+          <textarea id="svgInput2" placeholder="<svg>...</svg>"></textarea>
           <button id="convertBtn" onClick="convertToSCSS()">변환 & 복사</button>
 
           <h3>결과</h3>
@@ -301,9 +301,34 @@
         if (type === "scss") {
           document.querySelector('.wrapper').classList.add('visible');
           document.querySelector('.wrapper2').classList.remove('visible');
+          // document.getElementById('#keyInput').value = "";
+          // document.getElementById('#svgInput2').value = "";
+          // document.getElementById('#result').value = "";
+
+
+          document.querySelectorAll('input').forEach((el) => {
+            el.value = ""
+          })
+          document.querySelectorAll('textarea').forEach((el) => {
+            el.value = ""
+          })
+          document.querySelectorAll('pre').forEach((el) => {
+            el.value = ""
+          })
         } else {
           document.querySelector('.wrapper2').classList.add('visible');
           document.querySelector('.wrapper').classList.remove('visible');
+
+
+          document.querySelectorAll('input').forEach((el) => {
+            el.value = ""
+          })
+          document.querySelectorAll('textarea').forEach((el) => {
+            el.value = ""
+          })
+          document.querySelectorAll('pre').forEach((el) => {
+            el.value = ""
+          })
         }
       });
     });
@@ -315,7 +340,7 @@
       const icontype = document.querySelector('input[name="icontype"]:checked').value;
 
       const iconName = document.getElementById('iconName').value.trim();
-      const input = document.getElementById('svgInput').value;
+      const input = document.getElementById('svgInput2').value;
 
       if (!iconName || !input) {
         alert('아이콘 이름과 SVG를 모두 입력해주세요.');
