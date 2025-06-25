@@ -271,7 +271,7 @@
 
           <input type="text" id="iconName" placeholder="아이콘 명칭 입력 (예: scanform)">
           <textarea id="svgInput" placeholder="<svg>...</svg>"></textarea>
-          <button id="convertBtn" onClick="converToSCSS()">변환 & 복사</button>
+          <button id="convertBtn" onClick="convertToSCSS()">변환 & 복사</button>
 
           <h3>결과</h3>
           <pre id="result"></pre>
@@ -307,7 +307,7 @@
 
 
   <script>
-    function converToSCSS() {
+    function convertToSCSS() {
       const icontype = document.querySelector('input[name="icontype"]:checked').value;
 
       const iconName = document.getElementById('iconName').value.trim();
@@ -388,7 +388,7 @@
       const paths = doc.querySelectorAll("path");
 
       if (paths.length === 0) {
-        output.value = '⚠️ path 태그가 없습니다.';
+        output.textContent = '⚠️ path 태그가 없습니다.';
         return;
       }
 
@@ -401,12 +401,12 @@
       });
 
       if (!dCombined) {
-        output.value = '⚠️ d 속성이 없습니다.';
+        output.textContent = '⚠️ d 속성이 없습니다.';
         return;
       }
 
       const result = `<StreamGeometry PresentationOptions:Freeze="true" x:Key="${keyName}">${dCombined.trim()}</StreamGeometry>`;
-      output.value = result;
+      output.textContent = result;
       navigator.clipboard.writeText(result).then(() => alert('복사완료')).catch(err => alert(err))
 
       const previewImg = document.getElementById('svgPreview');
