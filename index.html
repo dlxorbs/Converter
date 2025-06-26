@@ -299,12 +299,8 @@
         console.log(type);
 
         if (type === "scss") {
-          document.querySelector('.wrapper').classList.add('visible');
-          document.querySelector('.wrapper2').classList.remove('visible');
-          // document.getElementById('#keyInput').value = "";
-          // document.getElementById('#svgInput2').value = "";
-          // document.getElementById('#result').value = "";
-
+          document.querySelector('.wrapper').classList.toggle('visible');
+          document.querySelector('.wrapper2').classList.toggle('visible');
 
           document.querySelectorAll('input').forEach((el) => {
             el.value = ""
@@ -316,9 +312,8 @@
             el.value = ""
           })
         } else {
-          document.querySelector('.wrapper2').classList.add('visible');
-          document.querySelector('.wrapper').classList.remove('visible');
-
+          document.querySelector('.wrapper').classList.toggle('visible');
+          document.querySelector('.wrapper2').classList.toggle('visible');
 
           document.querySelectorAll('input').forEach((el) => {
             el.value = ""
