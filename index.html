@@ -302,27 +302,27 @@
           document.querySelector('.wrapper').classList.toggle('visible');
           document.querySelector('.wrapper2').classList.toggle('visible');
 
-          document.querySelectorAll('input').forEach((el) => {
+          document.querySelectorAll('input[type="text"]').forEach((el) => {
             el.value = ""
           })
           document.querySelectorAll('textarea').forEach((el) => {
             el.value = ""
           })
           document.querySelectorAll('pre').forEach((el) => {
-            el.value = ""
+            pre.textContent = "";
           })
         } else {
           document.querySelector('.wrapper').classList.toggle('visible');
           document.querySelector('.wrapper2').classList.toggle('visible');
 
-          document.querySelectorAll('input').forEach((el) => {
+          document.querySelectorAll('input[type="text"]').forEach((el) => {
             el.value = ""
           })
           document.querySelectorAll('textarea').forEach((el) => {
             el.value = ""
           })
           document.querySelectorAll('pre').forEach((el) => {
-            el.value = ""
+            pre.textContent = "";
           })
         }
       });
